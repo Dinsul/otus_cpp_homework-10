@@ -10,58 +10,19 @@
 #include <mutex>
 #include <condition_variable>
 
+#define LOG_THREADS_NUM 2
+
 
 /*!
- * \brief ImpBulk интерфейс для бульков
+ * \brief Bulk булька
  */
-class ImpBulk
+class Bulk : public std::list<std::string>
 {
-protected:
-    std::list<std::string> _commands;   //!< Контейнер для хранения бульков
     time_t _beginTime;                  //!< Время записи первого элемента
 
 public:
-    virtual ~ImpBulk() {}
-
-    /*!
-     * \brief appendCmd Добаляет команду и сбрасывает таймер, если команда первая
-     * \param newCmd Новая команда
-     */
-    virtual void appendCmd(const std::string &newCmd);
-
-    /*!
-     * \brief clear Очищает список команд
-     */
-    virtual void clear();
-
-    /*!
-     * \brief logCommands Записывает бульку в файл
-     * \return количество записанных команд
-     */
-    virtual int logCommands() const = 0;
-
-    /*!
-     * \brief printCommands Выводит бульку на экран
-     * \return количество выведенных команд
-     */
-    virtual int printCommands() const = 0;
-
-    /*!
-     * \brief isEmpty Проверяет есть ли команды в бульке
-     * \return
-     */
-    virtual bool isEmpty() const {return _commands.empty();}
-
-};
-
-/*!
- * \brief Bulk класс реализации бульки
- */
-class Bulk : public ImpBulk
-{
-public:
-    int logCommands() const override;
-    int printCommands() const override;
+    time_t beginTime() const;
+    void refreshTime();
 };
 
 /*!
@@ -70,24 +31,45 @@ public:
 struct ImpWorker
 {
     virtual ~ImpWorker();
-    virtual void operator ()(ImpBulk &bulk) = 0;
+    virtual void operator ()(const Bulk &bulk) = 0;
+    virtual size_t bulksPrinted() = 0;
 };
 
 struct Worker : public ImpWorker
 {
-    void operator ()(ImpBulk &bulk) override;
+    void operator ()(const Bulk &bulk) override;
+    size_t bulksPrinted() override {return 0;}
 };
 
 struct MTWorker : public ImpWorker
 {
 private:
-    std::queue<std::thread> _printQueue;
-    std::queue<std::thread> _logQueue;
+    bool isRun;
+    size_t _printCommandsCounter;
+    size_t _printBulkCounter;
+
+    std::array<size_t, LOG_THREADS_NUM> _logCommandsCouter;
+    std::array<size_t, LOG_THREADS_NUM> _logBulksCouter;
+
+//    std::thread _printThread;
+//    std::array<std::thread, LOG_THREADS_NUM> _logThreads;
     std::condition_variable _cv;
     std::mutex              _cvMutex;
 
+    std::queue<Bulk> _bulksToLog;
+    std::queue<Bulk> _bulksToPrint;
+
+
+    void printHelper(size_t &commandsCounter, size_t &bulkCounter);
+    void logHelper(size_t &commandsCounter, size_t &bulkCounter);
+
 public:
-    void operator ()(ImpBulk &bulk) override;
+    MTWorker();
+    ~MTWorker();
+
+    void operator ()(const Bulk &bulk) override;
+
+    size_t bulksPrinted() override;
 };
 
 /*!
@@ -96,15 +78,20 @@ public:
  */
 class BulkController
 {
-    ImpBulk    &_bulk;
+    Bulk        _bulk;
+
     ImpWorker  &_worker;
-    size_t      _commandsCount;
+    size_t      _bulkSize;
     size_t      _currentNumber;
     size_t      _stackSize;
     std::string _signShiftUp;
     std::string _signShiftDown;
 
     size_t      _bulksCounter;
+    size_t      _commandsCounter;
+    size_t      _linesCounter;
+
+    void sendBulk();
 
 public:
     /*!
@@ -112,20 +99,15 @@ public:
      * \param bulk указатель на бульку
      * \param commandsCount колличество команд в бульке
      */
-    BulkController(size_t commandsCount, ImpBulk &bulk, ImpWorker &worker);
+    BulkController(size_t bulkSize, ImpWorker &worker);
+
+    ~BulkController();
 
     /*!
      * \brief addString добавляет строку, если булька заполнена, выполняет соответствующие действия
      * \param str новая строка
      */
     void addString(const std::string &str);
-
-    /*!
-     * \brief flush выводит и очищает буффер
-     * \param printInternalBlock если true будет напечатан незавершённый блок
-     * не завершённые круппы команд вне блока выводятся всегда
-     */
-    void flush(bool printInternalBlock = false);
 
     /*!
      * \brief signShiftUp возвращает подпись начала блока
@@ -150,5 +132,6 @@ public:
      * \param signShiftDown сторока обозначающая конец блока
      */
     void setSignShiftDown(const std::string &signShiftDown);
-    size_t bulksCounter() const;
+
+    void waiteWorker();
 };

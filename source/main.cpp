@@ -1,4 +1,4 @@
-#include "bulk.h"
+#include "mtbulk.h"
 #include <fstream>
 #include <iostream>
 
@@ -11,14 +11,13 @@ int main (int argc, char** argv)
         return 1;
     }
 
-    size_t commandsCount = static_cast<size_t>(atoi(argv[1]));
-    size_t linesCounter = 0;
+    size_t commandsCount   = static_cast<size_t>(atoi(argv[1]));
+    size_t linesCounter    = 0;
     size_t commandsCounter = 0;
 
-    Bulk   blk;
-    Worker wrk;
+    MTWorker wrk;
 
-    BulkController ctrl(commandsCount, blk, wrk);
+    BulkController ctrl(commandsCount, wrk);
 
     std::string cmd;
     cmd.clear();
@@ -35,7 +34,7 @@ int main (int argc, char** argv)
         }
     }
 
-    ctrl.flush();
+//    ctrl.waiteWorker();
 
     return 0;
 }
