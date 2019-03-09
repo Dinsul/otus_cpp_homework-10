@@ -34,7 +34,5 @@ int main (int argc, char** argv)
         }
     }
 
-//    ctrl.waiteWorker();
-
     return 0;
 }

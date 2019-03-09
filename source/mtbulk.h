@@ -51,14 +51,11 @@ private:
     std::array<size_t, LOG_THREADS_NUM> _logCommandsCouter;
     std::array<size_t, LOG_THREADS_NUM> _logBulksCouter;
 
-//    std::thread _printThread;
-//    std::array<std::thread, LOG_THREADS_NUM> _logThreads;
     std::condition_variable _cv;
     std::mutex              _cvMutex;
 
     std::queue<Bulk> _bulksToLog;
     std::queue<Bulk> _bulksToPrint;
-
 
     void printHelper(size_t &commandsCounter, size_t &bulkCounter);
     void logHelper(size_t &commandsCounter, size_t &bulkCounter);

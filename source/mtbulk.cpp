@@ -237,7 +237,7 @@ MTWorker::~MTWorker()
 
     for (int i = 0; i < LOG_THREADS_NUM; ++i)
     {
-        std::cout << "LogThread #" << i << "\n"
+        std::cout << "LogThread #" << i + 1 << "\n"
                   << "\tCommands: " << _logCommandsCouter[i] << "\n"
                   << "\tBulks:    " << _logBulksCouter[i] << std::endl;
     }
