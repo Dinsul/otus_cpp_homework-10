@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.2)
 
 if ($ENV{TRAVIS_BUILD_NUMBER})
-    project(mtbulk VERSION 0.0.$ENV{TRAVIS_BUILD_NUMBER})
+    project(bulkmt VERSION 0.0.$ENV{TRAVIS_BUILD_NUMBER})
 else ()
-    project(mtbulk VERSION 0.0.0)
+    project(bulkmt VERSION 0.0.0)
 endif ()
 
 if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")

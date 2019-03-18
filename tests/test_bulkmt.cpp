@@ -1,6 +1,6 @@
 #define BOOST_TEST_MODULE test_bulk
 
-#include "mtbulk.h"
+#include "bulkmt.h"
 
 #include <boost/test/unit_test.hpp>
 

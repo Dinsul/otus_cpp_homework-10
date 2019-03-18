@@ -1,4 +1,4 @@
-#include "mtbulk.h"
+#include "bulkmt.h"
 
 #include <iostream>
 #include <fstream>
