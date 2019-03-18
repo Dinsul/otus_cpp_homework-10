@@ -15,4 +15,4 @@ deploy:
   provider: script
   skip_cleanup: true
   script:
-  - curl -T mtbulk-0.0.$TRAVIS_BUILD_NUMBER-Linux.deb -udinsul:$BINTRAY_API_KEY "https://api.bintray.com/content/alpha/homeworks/package/$TRAVIS_BUILD_NUMBER/mtbulk-0.0.$TRAVIS_BUILD_NUMBER-Linux.deb;deb_distribution=trusty;deb_component=main;deb_architecture=amd64;publish=1"
+  - curl -T bulkmt-0.0.$TRAVIS_BUILD_NUMBER-Linux.deb -udinsul:$BINTRAY_API_KEY "https://api.bintray.com/content/alpha/homeworks/package/$TRAVIS_BUILD_NUMBER/bulkmt-0.0.$TRAVIS_BUILD_NUMBER-Linux.deb;deb_distribution=trusty;deb_component=main;deb_architecture=amd64;publish=1"
