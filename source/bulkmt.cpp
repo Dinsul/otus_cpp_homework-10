@@ -180,12 +180,12 @@ void MTWorker::logHelper(size_t &commandsCounter, size_t &bulkCounter)
             fileName = buffer;
         }while (fexists(fileName));
 
-        lk.unlock();
-
-
         std::ofstream logFile;
 
         logFile.open(fileName, std::ios_base::app);
+
+        lk.unlock();
+
 
         logFile << "bulk: ";
 

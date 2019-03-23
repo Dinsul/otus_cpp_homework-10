@@ -16,7 +16,7 @@ include("${CMAKE_BINARY_DIR}/conan.cmake")
 
 message(STATUS "Run 'conan install ...'")
 conan_cmake_run(REQUIRES
-    boost/1.68.0@conan/stable
+    boost/1.69.0@conan/stable
 
     OPTIONS boost:shared=False
     BASIC_SETUP CMAKE_TARGETS

@@ -6,7 +6,7 @@ add_executable(${PROJECT_NAME}
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     set_target_properties(${PROJECT_NAME} PROPERTIES
-        COMPILE_OPTIONS "-Wpedantic;-Wall;-Wextra"
+        COMPILE_OPTIONS "-Wpedantic;-Wall;-Wextra -fsanitize=thread"
         )
 endif()
 

@@ -9,6 +9,7 @@
 #include <thread>
 #include <mutex>
 #include <condition_variable>
+#include <array>
 
 #define LOG_THREADS_NUM 2
 
@@ -62,7 +63,7 @@ private:
 
 public:
     MTWorker();
-    ~MTWorker();
+    ~MTWorker() override;
 
     void operator ()(const Bulk &bulk) override;
 
